@@ -1,18 +1,40 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <h1>Reaction Timer</h1>
+  <button @click="start" :disabled="state.isPlaying">Play</button>
+  <Block 
+    v-if="state.isPlaying" 
+    :delay="state.delay" 
+    @end="endGame"
+  />
+  <p>Reaction time: {{ state.score }}</p>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+<script setup lang="ts">
+import { reactive } from 'vue'
+import Block from '@/components/Block.vue'
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-});
+interface State {
+  isPlaying: boolean
+  delay: number | null
+  score: number | null
+}
+
+const state = reactive<State>({
+  isPlaying: false,
+  delay: null,
+  score: null
+})
+
+function start () {
+  state.isPlaying = true
+  state.delay = 2000 + Math.random() * 5000
+}
+
+function endGame (reactionTime: number) {
+  state.score = reactionTime
+  state.isPlaying = false
+}
+
 </script>
 
 <style lang="scss">
@@ -21,7 +43,7 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #444;
   margin-top: 60px;
 }
 </style>
